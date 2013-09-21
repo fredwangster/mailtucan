@@ -76,11 +76,11 @@ a:hover {
                         <td colspan="4" align="left" valign="top" style="width: 14px; background-image: url(http://pmbcreative.com/newsletters/Template2/list_bullets.gif); background-repeat: no-repeat;"><img src="http://pmbcreative.com/newsletters/Template2/list_bullets.gif" width="18" height="14" alt="" align="left" /></td>
                         <td width="160" align="left" valign="top" style="font-family: Helvetica, Arial, sans-serif; color: #FFFFFF; padding-bottom: 7px; line-height: 120%; font-weight: bold;"><%= event["name"] %></td>
                       </tr>
-		      <tr>
+		                  <tr>
                         <td colspan="4" align="left" valign="top" style="width: 14px; background-image: url(http://pmbcreative.com/newsletters/Template2/list_bullets.gif); background-repeat: no-repeat;"><img src="http://pmbcreative.com/newsletters/Template2/list_bullets.gif" width="18" height="14" alt="" align="left" /></td>
                         <td width="160" align="left" valign="top" style="font-family: Helvetica, Arial, sans-serif; color: #767572; padding-bottom: 7px; line-height: 120%;"><%= event["start_time"] %></td>
                       </tr>
-		      <tr>
+		                  <tr>
                         <td colspan="4" align="left" valign="top" style="width: 14px; background-image: url(http://pmbcreative.com/newsletters/Template2/list_bullets.gif); background-repeat: no-repeat;"><img src="http://pmbcreative.com/newsletters/Template2/list_bullets.gif" width="18" height="14" alt="" align="left" /></td>
                         <td width="160" align="left" valign="top" style="font-family: Helvetica, Arial, sans-serif; color: #767572; padding-bottom: 7px; line-height: 120%;"><%= event["location"] %></td>
                       </tr>
@@ -88,9 +88,10 @@ a:hover {
                         <td colspan="5"><img src="http://pmbcreative.com/newsletters/Template2/list_separator.gif" width="179" height="10" alt="" /></td>
                       </tr>
                       <tr>
-                    <% end %>
+                   
                         <td colspan="5" style="height: 25px">&nbsp;</td>
                       </tr>
+                    <% end %>
                     </table></td>
                   </tr>
                 </table></td>
@@ -102,30 +103,33 @@ a:hover {
           </tr>
         </table></td>
         <td width="22" valign="top">&nbsp;</td>
-        <td width="398" valign="top" bgcolor="#161616"><table width="398" border="0" cellpadding="0" cellspacing="0">
+        <td width="398" valign="top" bgcolor="#161616">
+        <table width="398" border="0" cellpadding="0" cellspacing="0">
           <tr>
             <td valign="top" style="height: 25px;">&nbsp;</td>
           </tr>
           <% @pageData["posts"]["data"].each do |feed| %>
-	  <% if feed["message"] %>
-          <tr>
-            <% if feed["picture"] %><td><img src="<%= feed["picture"] %>" width="398" height="auto" alt=""></td><% end%>
-          </tr>
-          <tr>
-            <td valign="top" style="height: 20px;">&nbsp;</td>
-          </tr>
-          <tr>
-            <td valign="top" style="line-height: 130%;">
-            	<h3 style="font-family: Helvetica, Arial, sans-serif; font-size: 25px; font-weight: bold; color: #767572; letter-spacing: -2px; line-height: 100%;"><%= feed["created_time"] %></h3>
-              <p style="font-family: Helvetica, Arial, sans-serif; color: #767572; word-wrap:break-word;"><%= feed["message"] %></p>
-            </td>
-          </tr>
-          <tr>
-            <td><img src="http://pmbcreative.com/newsletters/Template2/article_separator.gif" width="398" height="69" alt=""></td>
-          </tr>
-	  <% end %>
-          <% end %>
-        </table></td>
+    	      
+              <% if feed["picture"] %>
+              <tr>
+                <td><img src="<%= feed["picture"] %>" width="398" height="auto" alt=""></td>
+              </tr>
+              <% end %>
+              <tr>
+                <td valign="top" style="height: 20px;">&nbsp;</td>
+              </tr>
+              <tr>
+                <td valign="top" style="line-height: 130%;">
+                	<h3 style="font-family: Helvetica, Arial, sans-serif; font-size: 25px; font-weight: bold; color: #767572; letter-spacing: -2px; line-height: 100%;"><%= feed["created_time"] %></h3>
+                  <p style="font-family: Helvetica, Arial, sans-serif; color: #767572; word-wrap:break-word;"><%= feed["message"] %></p>
+                </td>
+              </tr>
+              <tr>
+                <td><img src="http://pmbcreative.com/newsletters/Template2/article_separator.gif" width="398" height="69" alt=""></td>
+              </tr>
+    	      <% end %>
+        </table>
+      </td>
       </tr>
       <tr>
         <td colspan="3"><table width="600" border="0" cellpadding="0" cellspacing="0" style="color: #767572; padding-top: 10px;">

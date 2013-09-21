@@ -58,7 +58,49 @@ helpers do
 		return response.to_json
 	end
 
+	def sendIntro(subscription_id)
+		puts("#{subscription_id}")
+		subscription = Subscription.find(subscription_id)
+		
+		#make this more efficient... maybe 
+		puts "Newsletter: #{subscription.newsletter_id} <br /> Subscriber id: #{subscription.subscriber_id}" 
+		@subscriber = Subscriber.find(subscription.subscriber_id)
+		@newsletter = Newsletter.find(subscription.newsletter_id)#
 
+		puts "Subscriber email: #{@subscriber.subscriber_email}"#
+
+		page = Page.find(@newsletter.page_id)
+		@pageData = JSON.parse(page.fb_data)
+		@newsletter_date = "September 21, 2013"
+		@issue_number = "1"#
+
+		require('./views/templates/template_parser.rb')
+		@pageData = parseData(@pageData)#
+
+		template_file = Template.find(@newsletter.template_id)
+		template_file = "/templates/"+template_file.template_filename
+		puts "#{template_file}"
+
+		Pony.mail({
+		:headers => { 'Content-Type' => 'text/html' },
+		:to => 'subscribers@mailtucan.com',
+		:bcc => "#{@subscriber.subscriber_email}",
+		:from => 'newsletter@mailtucan.com',
+		:subject => "Weekly update #{@newsletter_date} for #{@pageData['name']}",
+		:body => erb(template_file.to_sym, layout: false),
+		:via => :smtp,
+		:via_options => {
+			:address => 'smtp.mailgun.org',
+			:port => 25,
+    		:enable_starttls_auto => true,
+    		:user_name => 'postmaster@mailtucan.com',
+    		:password => ENV['mailgun'],
+    		:authentication => :plain,
+    		:domain => "mailtucan.com",
+		},
+		})
+	
+	end
 end
 
 get '/' do 
@@ -251,6 +293,7 @@ post '/form/:newsletter_id' do
 	end
 
 	@subscription = Subscription.where("subscriber_id = ? AND newsletter_id = ?", @subscriber.id, params[:newsletter_id]).first
+	
 	if (!@subscription)
 		@subscription = @newsletter.subscriptions.build(
 						"subscriber_id" => @subscriber.id,
@@ -261,12 +304,18 @@ post '/form/:newsletter_id' do
 			"message" => "Thank you for subscribing!"
 		}
 
+		#send mail
+		sendIntro(@subscription.id)
+
 		erb :thankyou
 
 		#return @status.to_json
 	
 	end
 
+
+	
+	sendIntro(@subscription.id)
 
 	@subscription.active = true
 	@subscription.save
