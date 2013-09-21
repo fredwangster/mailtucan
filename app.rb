@@ -18,7 +18,7 @@ helpers do
 
 	#define FB Auth credentials in env.rb
 	def getFacebookAuth()
-		response = HTTParty.get("http://graph.facebook.com/oauth/access_token?client_id=#{ENV['fb_appid']}&client_secret=#{ENV['fb_appsecret']}&grant_type=client_credentials")
+		response = HTTParty.get("https://graph.facebook.com/oauth/access_token?client_id=#{ENV['fb_appid']}&client_secret=#{ENV['fb_appsecret']}&grant_type=client_credentials")
 		return response.parsed_response
 	end
 
@@ -53,7 +53,8 @@ helpers do
 
 	def getFacebookPosts(fb_id)
 		access_token = getFacebookAuth()
-		response = HTTParty.get("https://graph.facebook.com/#{fb_id}?fields=feed.fields(id,message,actions,created_time,updated_time,type,status_type,picture,link).limit(100),events.fields(description,location,id,name,owner,end_time,timezone,venue,start_time,privacy,cover)&#{access_token}")
+		encoded_url = URI.encode("https://graph.facebook.com/#{fb_id}?fields=name,location,about,posts.fields(id,message,actions,created_time,updated_time,type,status_type,picture,link,source).limit(20),events.fields(description,location,id,name,owner,end_time,timezone,venue,start_time,privacy,cover)&#{access_token}")
+		response = HTTParty.get(encoded_url)
 		return response.to_json
 	end
 
@@ -64,25 +65,6 @@ get '/' do
    erb :home
 end
 ################temp routes ################
-## crappy fix to populate templates table ##
-get '/migrate' do
-	config = JSON.parse(File.read("./views/templates/templates.json"))
-	templates = config["templates"]
-	templates.each do |template|
-		puts template["template_filename"]
-		@c_temp = Template.where("template_filename = ?", template["template_filename"]).first
-		unless(@c_temp)
-			@n_temp = Template.new
-			@n_temp.template_name = template["template_name"]
-			@n_temp.template_filename = template["template_filename"]
-			@n_temp.save
-		end
-		
-	end
-	"hello"
-end
-
-
 ## testing out ruby's mailer with default ##
 get '/testpony' do
 	Pony.mail({
@@ -99,8 +81,9 @@ end
 ## testing skinning facebook data ##
 get '/testdata/:template_url' do
 	@pageData = JSON.parse(File.read("./views/templates/dummydata.json"))
+	@newsletter_date = "September 21, 2013"
+	@issue_number = "1"
 
-	
 	require('./views/templates/template_parser.rb')
 	@pageData = parseData(@pageData)
 
@@ -119,7 +102,7 @@ post '/page' do
 	if (!params[:fb_url])
 		return {
 			"error" => true,
-			"message" => "Invalid Facebook URL detected"
+			"message" => "Enter a Facebook URL"
 			}.to_json
 	end
 
@@ -163,6 +146,7 @@ post '/page' do
 		@newsletter.save
 	end
 
+	redirect "/page/edit/#{fb_id}"
 	return {
 		"error" => false,
 		"fb_id" => fb_id
@@ -187,6 +171,7 @@ post '/page/edit/:fb_id' do
 		@newsletter = Newsletter.where("fb_id = ?", params[:fb_id]).first
 		@newsletter.template_id = params[:template_id]
 		@newsletter.save
+		redirect "/newsletter/#{@newsletter.id}"
 		return {
 			"error"	=> false,
 			"newsletter_id" => @newsletter.id
@@ -222,22 +207,35 @@ post '/form/:newsletter_id' do
 		@subscriber.save
 	end
 
-	@subscription = Subscription.where("subscriber_id = ? AND newsletter_id = ?", @subscriber.id, params[:newsletter_id])
+	@subscription = Subscription.where("subscriber_id = ? AND newsletter_id = ?", @subscriber.id, params[:newsletter_id]).first
 	if (!@subscription)
 		@subscription = @newsletter.subscriptions.build(
 						"subscriber_id" => @subscriber.id,
 						"active" => true)
-		return {
+
+		@status = {
 			"error"=> false,
 			"message" => "Thank you for subscribing!"
-		}.to_json
+		}
+
+		erb :thankyou
+
+		#return @status.to_json
 	
 	end
 
-	return {
-		"error"=> false,
-		"message" => "Thank you for subscribing again!"
-	}.to_json
+
+	@subscription.active = true
+	@subscription.save
+
+	@status = {
+			"error"=> false,
+			"message" => "Thank you for subscribing again!"
+	}
+
+	erb :thankyou
+
+	#return @status.to_json
 
 end
 
