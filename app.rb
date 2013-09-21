@@ -77,6 +77,19 @@ get '/testpony' do
 
 end
 
+get '/fromdb' do
+	page = Page.find(1)
+	@pageData = JSON.parse(page.fb_data)
+	@newsletter_date = "September 21, 2013"
+	@issue_number = "1"
+
+	require('./views/templates/template_parser.rb')
+	@pageData = parseData(@pageData)
+
+	
+	template_file= "/templates/one"
+	erb template_file.to_sym
+end
 
 get '/ponyskinz' do
 	@pageData = JSON.parse(File.read("./views/templates/dummydata.json"))
@@ -87,12 +100,22 @@ get '/ponyskinz' do
 	@pageData = parseData(@pageData)
 
 	template_file= "/templates/one"
-
 	Pony.mail({
-	:to => 'shuchun.wang@gmail.com',
-	:from => 'shuchun.wang@gmail.com',
-	:subject => 'testing ruby mailer',
-	:body => erb(template_file.to_sym)
+		:headers => { 'Content-Type' => 'text/html' },
+		:to => 'atulyapandey@gmail.com, fred@pagevamp.com, vincent@pagevamp.com',
+		:from => 'newsletter@mailtucan.com',
+		:subject => "Weekly update for #{@pageData['name']}",
+		:body => erb(template_file.to_sym, layout: false),
+		:via => :smtp,
+		:via_options => {
+			:address => 'smtp.mailgun.org',
+			:port => 25,
+    		:enable_starttls_auto => true,
+    		:user_name => 'postmaster@mailtucan.com',
+    		:password => '4bnunxe2yfy5',
+    		:authentication => :plain,
+    		:domain => "mailtucan.com",
+		},
 	})
 
 end 
