@@ -4,7 +4,7 @@ helpers do
 		#do stuff to parse data here
 		pageData["thatsme"] = "fred"
 
-		pageData["feed"]["data"].each do |feed|
+		pageData["posts"]["data"].each do |feed|
 			feed["message"] = "i hacked it"
 
 		end

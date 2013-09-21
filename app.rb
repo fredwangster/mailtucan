@@ -78,6 +78,24 @@ get '/testpony' do
 end
 
 
+get '/ponyskinz' do
+	@pageData = JSON.parse(File.read("./views/templates/dummydata.json"))
+	@newsletter_date = "September 21, 2013"
+	@issue_number = "1"
+
+	require('./views/templates/template_parser.rb')
+	@pageData = parseData(@pageData)
+
+	template_file= "/templates/one"
+
+	Pony.mail({
+	:to => 'shuchun.wang@gmail.com',
+	:from => 'shuchun.wang@gmail.com',
+	:subject => 'testing ruby mailer',
+	:body => erb(template_file.to_sym)
+	})
+
+end 
 ## testing skinning facebook data ##
 get '/testdata/:template_url' do
 	@pageData = JSON.parse(File.read("./views/templates/dummydata.json"))
