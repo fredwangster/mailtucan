@@ -43,12 +43,12 @@ a:hover {
                   </tr>
                   <tr>
                     <td valign="top" bgcolor="#161616" style="height: 25px; font-family: Helvetica, Arial, sans-serif; font-size: 19px; font-weight: bold; color: #4e4e4e; letter-spacing: 1px;">
-                        <br>Week of September 20, 2013
+                        <br>Week of <%=@newsletter_date %>
                     </td>
                   </tr>
 		  <tr>
                     <td valign="top" bgcolor="#161616" style="height: 25px; font-family: Helvetica, Arial, sans-serif; font-size: 19px; font-weight: bold; color: #4e4e4e; letter-spacing: 1px;">
-                        <br>Issue 12
+                        <br>Issue <%=@issue_number %>
                     </td>
                   </tr>
                 </table>
@@ -137,7 +137,7 @@ a:hover {
             <td width="397" rowspan="2" valign="top">
             	<p style="font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; color: #767572; margin: 0; padding: 0 0 6px 0;">Address:</p>
                 <p style="font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: #767572; margin: 0; padding: 0; letter-spacing: -0.3px;">
-                <%=@pageData["name"] %> - 123 Some Street, City, ST 99999. ph +1 4 1477 89 745 </p>
+                <%=@pageData["name"] %> - <% if @pageData["location"]["street"] %><%= @pageData["location"]["street"] %><% end %>, <% if @pageData["location"]["city"] %><%= @pageData["location"]["city"] %><% end %>, <% if @pageData["location"]["state"] %><%= @pageData["location"]["state"] %><% end %>, <% if @pageData["location"]["country"] %><%= @pageData["location"]["country"] %><% end %> </p>
             </td>
           </table></td>
       </tr>
