@@ -164,8 +164,9 @@
 															</tr>
 														</table>
 														<% @pageData["posts"]["data"].each do |feed| %>
+														<% if feed["message"] %>
 														<h1 style="font-size: 24px; font-family: Georgia, 'Times New Roman', Times, serif; color: #333; margin-top: 0px; margin-bottom: 12px;"><%= feed["created_time"] %></h1>
-														<img style="border: solid 1px #FFF; box-shadow: 2px 2px 6px #333; -webkit-box-shadow: 2px 2px 6px #333333; -khtml-box-shadow: 2px 2px 6px #333; -moz-box-shadow: 2px 2px 6px #333;" src="<% if feed["picture"] %><%= feed["picture"] %><% end%>" width="370" height="auto">
+														<% if feed["picture"] %><img style="border: solid 1px #FFF; box-shadow: 2px 2px 6px #333; -webkit-box-shadow: 2px 2px 6px #333333; -khtml-box-shadow: 2px 2px 6px #333; -moz-box-shadow: 2px 2px 6px #333;" src="<%= feed["picture"] %>" width="370" height="auto"><% end%>
 													
 														<table width="100%" border="0" cellpadding="0" cellspacing="0">
 															<tr>
@@ -179,6 +180,7 @@
 																<td><img src="http://pmbcreative.com/newsletters/Template1/line-break-6.jpg" width="378" height="40"></td>
 															</tr>
 														</table>
+														<% end %>
 														<% end %>
 													</td>
 												</tr>
