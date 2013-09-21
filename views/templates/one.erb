@@ -55,7 +55,7 @@
 												</tr>
 												<tr>
 													<td>
-														<h1 style="text-align: center; color: #333333; margin-top: 0px; margin-bottom: 0px; font-weight: normal; font-size: 48px; font-family: Georgia, 'Times New Roman', Times, serif">My Awesome Business<br><em>Newsletter</em></h1>
+														<h1 style="text-align: center; color: #333333; margin-top: 0px; margin-bottom: 0px; font-weight: normal; font-size: 48px; font-family: Georgia, 'Times New Roman', Times, serif"><%=@pageData["name"] %><br><em>Newsletter</em></h1>
 													</td>
 												</tr>
 												<tr>
@@ -163,7 +163,7 @@
 																<td valign="top" height="40"><img src="http://pmbcreative.com/newsletters/Template1/line-break-5.jpg" width="378" height="17"></td>
 															</tr>
 														</table>
-														<% @pageData["feed"]["data"].each do |feed| %>
+														<% @pageData["posts"]["data"].each do |feed| %>
 														<h1 style="font-size: 24px; font-family: Georgia, 'Times New Roman', Times, serif; color: #333; margin-top: 0px; margin-bottom: 12px;"><%= feed["created_time"] %></h1>
 														<img style="border: solid 1px #FFF; box-shadow: 2px 2px 6px #333; -webkit-box-shadow: 2px 2px 6px #333333; -khtml-box-shadow: 2px 2px 6px #333; -moz-box-shadow: 2px 2px 6px #333;" src="<% if feed["picture"] %><%= feed["picture"] %><% end%>" width="370" height="auto">
 													
