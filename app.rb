@@ -232,7 +232,8 @@ end
 get '/newsletter/:newsletter_id' do
 	
 	@newsletter = Newsletter.where("id = ?", params[:newsletter_id]).first
-
+	@form_link = "http://mailtucan.herokuapp.com/form/#{@newsletter.id}"
+	@embed_link = "http://mailtucan.herokuapp.com/embed/#{@newsletter.id}"
 	#newsletter iframe source will be something like "mailtucan.com/embed/:newsletter_id"
 	erb :embed_code
 
