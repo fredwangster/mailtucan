@@ -2,23 +2,20 @@ source 'https://rubygems.org'
 ruby "1.9.3"
 gem 'sinatra'
 gem 'thin'
-gem 'aws-s3'
 gem 'rack'
 gem 'rake'
-gem 'data_mapper'
-gem 'dm-postgres-adapter'
-gem 'dm-core'
-gem 'dm-timestamps'
-gem 'dm-validations'
-gem 'dm-aggregates'
-gem 'dm-migrations'
+gem 'json'
+gem 'activerecord'
+gem 'sinatra-activerecord'
+gem 'httparty'
+gem 'pony'
 
 group :development do
   gem 'sqlite3'
-  gem 'dm-sqlite-adapter'
 end
 
 group :production do
+  gem 'pg'
 end
 
 group :test do

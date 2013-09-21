@@ -1,0 +1,16 @@
+{
+	"templates": [
+		{
+			"template_name": "One",
+			"template_filename": "one.erb"
+		},
+		{
+			"template_name": "Two",
+			"template_filename": "two.erb"
+		},
+		{
+			"template_name": "Three",
+			"template_filename": "three.erb"
+		}
+	]
+}
