@@ -1,8 +1,43 @@
-<!-- Form goes here -->
-<% if @newsletter %>
-	<form action="/form/<%= @newsletter.id %>" method="POST">
-		<input type="text" name="subscriber_email" placeholder="Your Email Address">
-		<input type="submit" name="submit" value="Subscribe">
-	</form>
-<% end %>
-<!--  end form -->
+<html lang="en">
+<head>
+    <title>Mail Tucan</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css">
+</head>
+    
+<body style="background-color: #ffffff;">
+    <div class="whiteBackground">
+    <div class="container">
+        <div class="col-lg-6  col-offset-3 patternBackground" style="margin-top: 30px; box-shadow: 0px 0px 10px #B9B9C8; padding-right: 0px; padding-left: 0px; margin-bottom: 30px;">
+            <div class="row centerThis">
+                <div class="signupTitle">
+                    My Business
+                </div>
+                <hr style="margin-right: 40px; margin-left: 40px;">
+            </div>
+            <div class="row centerThis" style="padding-top: 20px; padding-bottom: 80px;">
+                <div class="col-lg-12">
+                    <div class="signupText">
+                        Ingrese su email para recibir noticias semanales.
+                    </div>
+                    <form action="/form/<%= @newsletter.id %>" method="POST">
+                    <div class="col-lg-8 col-offset-2">
+			<input class="facebookURL" type="text" name="subscriber_email" type="text" placeholder="Tu Email">
+                    </div>
+                    <div class="col-lg-4 col-offset-4">
+                        <input class="subscribeButton" type="submit" name="submit" value="suscribir">
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="greenBox centerThis">
+                <div class="powered">
+                    Powered by:
+                </div>
+                <img class="logoimg" src="/img/logo4.png" />
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
