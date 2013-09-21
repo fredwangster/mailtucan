@@ -1,7 +1,41 @@
-<textarea>
-<iframe height="500" allowTransparency="true" frameborder="0" scrolling="no" style="width:100%; border:none" src="/embed/<%= @newsletter.id %>"></iframe>
-</textarea>
 
-or share:
-
-<a href="/form/<%= @newsletter.id %>">/form/<%= @newsletter.id %></a>
+<html lang="en">
+<head>
+    <title>Mail Tucan</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css">
+</head>
+    
+<body style="background-color: #00B285;">
+    <div class="photoBackground">
+    <div class="container">
+        <div class="row centerThis">
+            <img class="logoimg2" src="/img/logomin.png" />
+            <hr>
+        </div>
+        <div class="row centerThis" style="padding-top: 20px; padding-bottom: 80px;">
+            <div class="col-lg-12">
+                <div class="finishTitle">
+                    Has Terminado!
+                </div>
+                <div class="finishText">
+                    Aqui tienes la dirección de tu formulario suscriptor:
+                </div>
+                <a class="pageLink" href="www.pagevamp.com" target="_blank">www.mailtucan.com/subscriberpage</a>
+                <div class="finishText" style="padding-top: 20px;">
+                    También se puede introducir en tu página web:
+                </div>
+                <div class="col-lg-4 col-offset-4">
+                    <textarea style="width: 100%; height: 80px;">&lt;iframe height="500" allowTransparency="true" frameborder="0" scrolling="no" style="width:100%; border:none" src="/embed/<%= @newsletter.id %>"&gt;&lt;/iframe&gt;</textarea>
+                </div>
+                <div class="col-lg-2 col-offset-5">
+                    <div class="backButton">
+                        Portada
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
