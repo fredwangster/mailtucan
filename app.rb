@@ -102,9 +102,10 @@ get '/ponyskinz' do
 	template_file= "/templates/one"
 	Pony.mail({
 		:headers => { 'Content-Type' => 'text/html' },
-		:to => 'atulyapandey@gmail.com, fred@pagevamp.com, vincent@pagevamp.com',
+		:to => 'subscribers@mailtucan.com',
+		:bcc => 'atulyapandey@gmail.com, fred@pagevamp.com, vincent@pagevamp.com',
 		:from => 'newsletter@mailtucan.com',
-		:subject => "Weekly update for #{@pageData['name']}",
+		:subject => "Weekly update #{@newsletter_date} for #{@pageData['name']}",
 		:body => erb(template_file.to_sym, layout: false),
 		:via => :smtp,
 		:via_options => {
@@ -112,7 +113,7 @@ get '/ponyskinz' do
 			:port => 25,
     		:enable_starttls_auto => true,
     		:user_name => 'postmaster@mailtucan.com',
-    		:password => '4bnunxe2yfy5',
+    		:password => ENV['mailgun'],
     		:authentication => :plain,
     		:domain => "mailtucan.com",
 		},
@@ -295,17 +296,56 @@ get '/embed/:newsletter_id' do
 	erb :embed
 end
 
+get '/admin' do
+	
+
+end
 
 
 #the mailer
-post '/mailer/:newsletter_id' do
-	#accepts :token as param
+get '/mailer/:newsletter_id' do
+	#if (params[:token] == ENV['token'])
+		Subscription.find_each do | subscription |
+			#make this more efficient... maybe 
+			puts "Newsletter: #{subscription.newsletter_id} <br /> Subscriber id: #{subscription.subscriber_id}" 
+			@subscriber = Subscriber.find(subscription.subscriber_id)
+			@newsletter = Newsletter.find(subscription.newsletter_id)
 
-	#check for token ==> NOT IN GITHUB
+			puts "Subscriber email: #{@subscriber.subscriber_email}"
 
-	#pull the correct template info
+			page = Page.find(@newsletter.page_id)
+			@pageData = JSON.parse(page.fb_data)
+			@newsletter_date = "September 21, 2013"
+			@issue_number = "1"
 
-	#call mail script
+			require('./views/templates/template_parser.rb')
+			@pageData = parseData(@pageData)
+
+			template_file = Template.find(@newsletter.template_id)
+			template_file = "/templates/"+template_file.template_filename
+			puts "#{template_file}"
+
+			Pony.mail({
+			:headers => { 'Content-Type' => 'text/html' },
+			:to => 'subscribers@mailtucan.com',
+			:bcc => "#{@subscriber.subscriber_email}",
+			:from => 'newsletter@mailtucan.com',
+			:subject => "Weekly update #{@newsletter_date} for #{@pageData['name']}",
+			:body => erb(template_file.to_sym, layout: false),
+			:via => :smtp,
+			:via_options => {
+				:address => 'smtp.mailgun.org',
+				:port => 25,
+	    		:enable_starttls_auto => true,
+	    		:user_name => 'postmaster@mailtucan.com',
+	    		:password => ENV['mailgun'],
+	    		:authentication => :plain,
+	    		:domain => "mailtucan.com",
+			},
+	})
+
+		end
+	#end
 
 end
 
