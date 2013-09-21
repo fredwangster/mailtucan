@@ -1,2 +1,23 @@
 require './app'
 require 'sinatra/activerecord/rake'
+
+task :default => [:pop_templates]
+
+desc "populate email templates into db" 
+task :pop_templates do
+
+	config = JSON.parse(File.read("./views/templates/templates.json"))
+	templates = config["templates"]
+	templates.each do |template|
+		puts template["template_filename"]
+		@c_temp = Template.where("template_filename = ?", template["template_filename"]).first
+		unless(@c_temp)
+			@n_temp = Template.new
+			@n_temp.template_name = template["template_name"]
+			@n_temp.template_filename = template["template_filename"]
+			@n_temp.save
+		end
+		
+	end
+
+end
