@@ -5,7 +5,8 @@ helpers do
 		pageData["thatsme"] = "fred"
 
 		pageData["feed"]["data"].each do |feed|
-			feed["message"] = "i hacked it"
+
+			feed["picture"] = feed["picture"].gsub("_s", "_n")
 
 		end
 
