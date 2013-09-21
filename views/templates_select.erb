@@ -1,0 +1,16 @@
+
+<form action="/page/edit/<%= @fb_id %>" method="post">
+
+<% if @templates %>
+	<% @templates.each do |template| %>
+		<input type="radio" name="template_id" value="<%= template.id %>">
+		<%= template.template_name %>
+		<%= template.template_filename %> 
+		<br />
+	<% end %>
+
+
+    <input type="submit" name="submit" value="Submit">
+<% end %>
+
+</form>

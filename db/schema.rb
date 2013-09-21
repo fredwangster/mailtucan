@@ -13,6 +13,7 @@
 ActiveRecord::Schema.define(version: 20130921001244) do
 
   create_table "newsletters", force: true do |t|
+    t.string  "fb_id"
     t.integer "page_id"
     t.integer "template_id"
   end

@@ -94,8 +94,8 @@ end
 post '/page' do
 	if (!params[:fb_url])
 		return {
-			:error => "true",
-			:message => "Invalid Facebook URL detected"
+			"error" => true,
+			"message" => "Invalid Facebook URL detected"
 			}.to_json
 	end
 
@@ -140,8 +140,8 @@ post '/page' do
 	end
 
 	return {
-		:error => "false",
-		:fb_id => fb_id
+		"error" => false,
+		"fb_id" => fb_id
 		}.to_json
 
 end
@@ -163,15 +163,16 @@ post '/page/edit/:fb_id' do
 		@newsletter = Newsletter.where("fb_id = ?", params[:fb_id]).first
 		@newsletter.template_id = params[:template_id]
 		@newsletter.save
+		return {
+			"error"	=> false,
+			"newsletter_id" => @newsletter.id
+		}.to_json
 	else
 
 		"Bad Request"
 	end
 
-	return {
-		"error"	=> false,
-		"newsletter_id" => @newsletter.newsletter_id
-	}.to_json
+
 
 	#redirect to /newsletter/:newsletter_id for embed code 
 end
@@ -179,10 +180,10 @@ end
 #get newsletter embed code
 get '/newsletter/:newsletter_id' do
 	
-	@newsletter = Newsletter.where("newsletter_id = ?", params[:newsletter_id]).first
+	@newsletter = Newsletter.where("id = ?", params[:newsletter_id]).first
 
 	#newsletter iframe source will be something like "mailtucan.com/embeddable/:newsletter_id"
-	erb :embedcode
+	erb :embed_code
 
 end
 
@@ -201,8 +202,8 @@ post '/form/:newsletter_id' do
 						"active" => true)
 
 	return {
-		:error => false,
-		:message => "Thank you for subscribing!"
+		"error"=> false,
+		"message" => "Thank you for subscribing!"
 	}.to_json
 	
 end
