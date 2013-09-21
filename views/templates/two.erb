@@ -107,8 +107,9 @@ a:hover {
             <td valign="top" style="height: 25px;">&nbsp;</td>
           </tr>
           <% @pageData["posts"]["data"].each do |feed| %>
+	  <% if feed["message"] %>
           <tr>
-            <td><img src="<% if feed["picture"] %><%= feed["picture"] %><% end%>" width="398" height="auto" alt=""></td>
+            <% if feed["picture"] %><td><img src="<%= feed["picture"] %>" width="398" height="auto" alt=""></td><% end%>
           </tr>
           <tr>
             <td valign="top" style="height: 20px;">&nbsp;</td>
@@ -122,6 +123,7 @@ a:hover {
           <tr>
             <td><img src="http://pmbcreative.com/newsletters/Template2/article_separator.gif" width="398" height="69" alt=""></td>
           </tr>
+	  <% end %>
           <% end %>
         </table></td>
       </tr>
