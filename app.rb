@@ -284,20 +284,29 @@ end
 #subscriber. called by form to add email to subscription
 post '/form/:newsletter_id' do
 	#accepts :fb_id, :subscriber_email as param
-	@newsletter = Newsletter.where("id = ?", params[:newsletter_id]).first
+	@newsletter = Newsletter.find(params[:newsletter_id])
+	puts "#{params[:newsletter_id]} ======================="
 	@subscriber = Subscriber.where("subscriber_email = ?", params[:subscriber_email]).first
 	if(!@subscriber)
 		@subscriber = Subscriber.new
 		@subscriber.subscriber_email = params[:subscriber_email]
 		@subscriber.save
 	end
+	puts "#{@subscriber.id} ======== #{@newsletter.id}"
 
 	@subscription = Subscription.where("subscriber_id = ? AND newsletter_id = ?", @subscriber.id, params[:newsletter_id]).first
 	
+
 	if (!@subscription)
+		puts "&&&&&&&&&&&&&&&&&&& #{@newsletter.id}"
 		@subscription = @newsletter.subscriptions.build(
 						"subscriber_id" => @subscriber.id,
 						"active" => true)
+		@subscription.save
+
+		if(!@subscription)
+			return {"error" => true, "message" => "could not create subscription"}.to_json
+		end
 
 		@status = {
 			"error"=> false,
@@ -307,13 +316,11 @@ post '/form/:newsletter_id' do
 		#send mail
 		sendIntro(@subscription.id)
 
-		erb :thankyou
+		redirect("/thankyou")
 
-		#return @status.to_json
+		return @status.to_json
 	
 	end
-
-
 	
 	sendIntro(@subscription.id)
 
@@ -325,16 +332,19 @@ post '/form/:newsletter_id' do
 			"message" => "Thank you for subscribing again!"
 	}
 
+	redirect("/thankyou")
+
+	return @status.to_json
+
+end
+
+get '/thankyou' do
 	erb :thankyou
-
-	#return @status.to_json
-
 end
 
 #form, standalone for easy sharing
 get '/form/:newsletter_id' do
-	@newsletter = Newsletter.where("id= ?", params[:newsletter_id]).first
-
+	@newsletter = Newsletter.find(params[:newsletter_id])
 	erb :form
 end
 
