@@ -1,0 +1,8 @@
+<!-- embeddable form goes here -->
+<% if @newsletter %>
+	<form action="/form/<%= @newsletter.id %>" method="POST">
+		<input type="text" name="subscriber_email" placeholder="Your Email Address">
+		<input type="submit" name="submit" value="Subscribe">
+	</form>
+<% end %>
+<!--  end form -->

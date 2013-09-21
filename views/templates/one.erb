@@ -1,0 +1,26 @@
+<% if (@pageData) %>
+	
+
+
+	<% if (@pageData["thatsme"]) %>
+		Testing injecting some data through template_parser.rb
+
+		<%= @pageData["thatsme"] %>
+		<br />
+
+
+	<% end %>
+	<% @pageData["feed"]["data"].each do |feed| %>
+		<%= feed["message"] %>
+		<br />
+	<% end %>
+
+	<% @pageData["events"]["data"].each do |event| %>
+
+		<% if event["description"] %>
+			<%= event["description"] %> 
+		<% end %>
+	<% end %>
+<% end %>
+
+blabhalbh

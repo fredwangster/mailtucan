@@ -15,6 +15,13 @@ ActiveRecord::Base.establish_connection(
 
 
 helpers do
+
+	#define FB Auth credentials in env.rb
+	def getFacebookAuth()
+		response = HTTParty.get("http://graph.facebook.com/oauth/access_token?client_id=#{ENV['fb_appid']}&client_secret=#{ENV['fb_appsecret']}&grant_type=client_credentials")
+		return response.parsed_response
+	end
+
 	def getFacebookId(url) 
 		#parseURL to get ID
 		parseUrl = URI(url)
@@ -45,7 +52,8 @@ helpers do
 	end
 
 	def getFacebookPosts(fb_id)
-		response = HTTParty.get("http://graph.facebook.com/#{fb_id}?fields=feed.fields(id,message,actions,created_time,updated_time,type,status_type).limit(100)")
+		access_token = getFacebookAuth()
+		response = HTTParty.get("https://graph.facebook.com/#{fb_id}?fields=feed.fields(id,message,actions,created_time,updated_time,type,status_type,picture,link).limit(100),events.fields(description,location,id,name,owner,end_time,timezone,venue,start_time,privacy,cover)&#{access_token}")
 		return response.to_json
 	end
 
@@ -86,6 +94,22 @@ get '/testpony' do
 		})
 
 end
+
+
+## testing skinning facebook data ##
+get '/testdata/:template_url' do
+	@pageData = JSON.parse(File.read("./views/templates/dummydata.json"))
+
+	
+	require('./views/templates/template_parser.rb')
+	@pageData = parseData(@pageData)
+
+	template_file= "/templates/#{params[:template_url]}"
+	erb template_file.to_sym
+end
+
+
+
 
 ################  end temp  ################
 
@@ -182,7 +206,7 @@ get '/newsletter/:newsletter_id' do
 	
 	@newsletter = Newsletter.where("id = ?", params[:newsletter_id]).first
 
-	#newsletter iframe source will be something like "mailtucan.com/embeddable/:newsletter_id"
+	#newsletter iframe source will be something like "mailtucan.com/embed/:newsletter_id"
 	erb :embed_code
 
 end
@@ -190,27 +214,36 @@ end
 #subscriber. called by form to add email to subscription
 post '/form/:newsletter_id' do
 	#accepts :fb_id, :subscriber_email as param
-	@newsletter = Newsletter.where("newsletter_id = ?", params[:newsletter_id]).first
+	@newsletter = Newsletter.where("id = ?", params[:newsletter_id]).first
 	@subscriber = Subscriber.where("subscriber_email = ?", params[:subscriber_email]).first
 	if(!@subscriber)
 		@subscriber = Subscriber.new
-		@subscriber.email = params[:subscriber_email]
+		@subscriber.subscriber_email = params[:subscriber_email]
 		@subscriber.save
 	end
+
+	@subscription = Subscription.where("subscriber_id = ? AND newsletter_id = ?", @subscriber.id, params[:newsletter_id])
+	if (!@subscription)
 		@subscription = @newsletter.subscriptions.build(
-						"subscriber_id" => @subscriber.subscriber_id,
+						"subscriber_id" => @subscriber.id,
 						"active" => true)
+		return {
+			"error"=> false,
+			"message" => "Thank you for subscribing!"
+		}.to_json
+	
+	end
 
 	return {
 		"error"=> false,
-		"message" => "Thank you for subscribing!"
+		"message" => "Thank you for subscribing again!"
 	}.to_json
-	
+
 end
 
 #form, standalone for easy sharing
 get '/form/:newsletter_id' do
-	@newsletter = Newsletter.where("newsletter_id = ?", params[:newsletter_id])
+	@newsletter = Newsletter.where("id= ?", params[:newsletter_id]).first
 
 	erb :form
 end
@@ -218,7 +251,7 @@ end
 
 #the actual embeddable form. this gets iframed
 get '/embed/:newsletter_id' do
-	@newsletter = Newsletter.where("newsletter_id = ?", params[:newsletter_id])
+	@newsletter = Newsletter.where("id = ?", params[:newsletter_id]).first
 
 	erb :embed
 end
@@ -242,10 +275,11 @@ end
 #unsubscriber
 #TODO: generate unique hash for every subscription
 get '/subscriptions/:subscription_id' do
-	@subscription = Subscription.where("subscription_id = ?", params[:subscription_id])
+	@subscription = Subscription.where("id = ?", params[:subscription_id])
 	if(@subscription)
 		@subscription.active = false
 		@subscription.save
+
 	end
 
 	erb :unsubscribe
